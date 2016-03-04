@@ -20,7 +20,6 @@ import com.loopj.android.http.AsyncHttpResponseHandler;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import cz.msebera.android.httpclient.Header;
 

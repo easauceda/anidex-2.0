@@ -18,8 +18,10 @@
         android:theme="@android:style/Theme.Holo">
         <activity android:name=".MainActivity">
             <uses-permission android:name="android.permission.CAMERA" />
+
             <intent-filter>
                 <action android:name="com.cs437.esauceda.myapplication.MainActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -27,6 +29,12 @@
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login">
+            <intent-filter>
+                <action android:name="com.cs437.esauceda.myapplication.LoginActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
