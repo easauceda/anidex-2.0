@@ -95,11 +95,14 @@ public class MainActivity extends Activity {
             @Override
             public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
                 String s = new String(responseBody);
+                System.out.println(s);
                 JSONObject json = null;
                 try {
                     String name = "";
                     json = new JSONObject(s);
-                    JSONArray tags = json.getJSONArray("tags");
+                    JSONArray results = json.getJSONArray("results");
+                    JSONObject img_info = results.getJSONObject(0);
+                    JSONArray tags = img_info.getJSONArray("tags");
                     JSONObject first_tag = tags.getJSONObject(0);
                     name = first_tag.get("tag").toString();
                     getInfo(name);
