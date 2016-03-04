@@ -32,9 +32,28 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         AnimalDbHelper mydb = new AnimalDbHelper(this);
         mydb.clearDB(mydb.getWritableDatabase());
-        mydb.insertAnimal("Dog", "Canus Lupus", "Africa", "This is a damn dog, what do you want", "http://images5.fanpop.com/image/photos/25600000/DOG-ssssss-dogs-25606625-1024-768.jpg");
-        mydb.insertAnimal("Cat", "Feline", "Africa", "This is a damn dog, what do you want", "http://static3.shop033.com/resources/18/160536/picture/16/85402902.jpg");
-        mydb.insertAnimal("Fish", "Goldus Fishus", "Africa", "This is a damn dog, what do you want", "http://img14.deviantart.net/8959/i/2007/338/8/d/goldfish_1600x1200_by_kira_r.jpg");
+        mydb.insertAnimal("Dog", "Canis lupus familiaris",
+                "Although initially thought to have originated as a manmade variant of an extant " +
+                "canid species (variously supposed as being the dhole, golden jackal,or gray wolf), " +
+                "extensive genetic studies undertaken during the 2010s indicate that dogs diverged from an " +
+                "extinct wolf-like canid in Eurasia 40,000 years ago.",
+                "The domestic dog is a domesticated canid which has been selectively bred for " +
+                "millennia for various behaviors, sensory capabilities, and physical attributes.",
+                "http://images5.fanpop.com/image/photos/25600000/DOG-ssssss-dogs-25606625-1024-768.jpg");
+        mydb.insertAnimal("Cat", "Felis catus", "Since cats were venerated in ancient Egypt, they were " +
+                "commonly believed to have been domesticated there, but there may have been instances " +
+                "of domestication as early as the Neolithic from around 9,500 years ago (7,500 BCE). " +
+                "A genetic study in 2007 concluded that domestic cats are descended from Near Eastern " +
+                "wildcats, having diverged around 8,000 BCE in West Asia.", "The domesticated cat or the undomesticated cat" +
+                " is a small, typically furry, carnivorous mammal. They are often called house cats " +
+                "when kept as indoor pets or simply cats when there is no need to distinguish them " +
+                "from other felids and felines.", "http://static3.shop033.com/resources/18/160536/picture/16/85402902.jpg");
+        mydb.insertAnimal("Fish", "Goldus Fishus", "Starting in ancient China, various species of carp (collectively known as" +
+                " Asian carp) have been domesticated and reared as food fish for thousands of years. Some of these normally gray" +
+                " or silver species have a tendency to produce red, orange or yellow colour mutations; this was first recorded " +
+                "during the Jin dynasty (265–420).", "The goldfish is a freshwater fish in the family Cyprinidae of " +
+                "order Cypriniformes. It was one of the earliest fish to be domesticated, and is one of the most commonly kept " +
+                "aquarium fish.", "http://img14.deviantart.net/8959/i/2007/338/8/d/goldfish_1600x1200_by_kira_r.jpg");
         updateView(mydb);
     }
 
