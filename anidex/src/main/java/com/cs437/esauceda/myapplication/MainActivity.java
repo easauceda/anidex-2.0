@@ -32,10 +32,10 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AnimalDbHelper mydb = new AnimalDbHelper(this);
-        mydb.insertAnimal("Dog", "Canus Lupus", "Africa", "This is a damn dog, what do you want", "dog.com");
-        mydb.insertAnimal("Cat", "Feline", "Africa", "This is a damn dog, what do you want", "dog.com");
-        mydb.insertAnimal("Fish", "Goldus Fishus", "Africa", "This is a damn dog, what do you want", "dog.com");
         mydb.clearDB(mydb.getWritableDatabase());
+        mydb.insertAnimal("Dog", "Canus Lupus", "Africa", "This is a damn dog, what do you want", "http://images5.fanpop.com/image/photos/25600000/DOG-ssssss-dogs-25606625-1024-768.jpg");
+        mydb.insertAnimal("Cat", "Feline", "Africa", "This is a damn dog, what do you want", "http://static3.shop033.com/resources/18/160536/picture/16/85402902.jpg");
+        mydb.insertAnimal("Fish", "Goldus Fishus", "Africa", "This is a damn dog, what do you want", "http://img14.deviantart.net/8959/i/2007/338/8/d/goldfish_1600x1200_by_kira_r.jpg");
         updateView(mydb);
     }
 
