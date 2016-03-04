@@ -9,8 +9,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.cs437.esauceda.myapplication.MainActivity"
     android:weightSum="1"
-    android:orientation="vertical"
-    android:background="@android:color/holo_blue_dark">
+    android:orientation="vertical">
 
     <ListView
         android:layout_width="fill_parent"
@@ -25,6 +24,7 @@
         android:text="New Animal"
         android:id="@+id/camera"
         android:layout_gravity="center_horizontal"
-        android:onClick="newAnimal" />
+        android:onClick="newAnimal"
+        android:background="@android:color/holo_blue_dark" />
 
 </LinearLayout>
