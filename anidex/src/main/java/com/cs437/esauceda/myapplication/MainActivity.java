@@ -2,26 +2,35 @@ package com.cs437.esauceda.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.request.HttpRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
-import cz.msebera.android.httpclient.Header;
+import local.org.apache.http.Header;
+
 
 public class MainActivity extends Activity {
     static final int REQUEST_IMAGE_CAPTURE = 1;
@@ -67,51 +76,128 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            final AnimalDbHelper mydb = new AnimalDbHelper(this);
-            AsyncHttpClient client = new AsyncHttpClient();
-            client.get("http://sauceda.me:3000/horse", new AsyncHttpResponseHandler() {
-
-                @Override
-                public void onStart() {
-                    // called before request is started
-                }
-
-                @Override
-                public void onSuccess(int statusCode, Header[] headers, byte[] response) {
-                    String result;
-                    String name;
-                    String sciName;
-                    String origin;
-                    String desc;
-                    String path;
-                    try {
-                        result = new String(response, "UTF-8");
-                        JSONObject info = new JSONObject(result);
-                        name = info.getString("name");
-                        sciName = info.getString("sciName");
-                        origin = info.getString("origin");
-                        desc = info.getString("description");
-                        path = info.getString("imageUrl");
-                        mydb.insertAnimal(name, sciName, origin, desc, path);
-                        saveEntry(name);
-                        updateView(mydb);
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-
-                @Override
-                public void onFailure(int statusCode, Header[] headers, byte[] errorResponse, Throwable e) {
-                    // called when response HTTP status is "4XX" (eg. 401, 403, 404)
-                }
-
-                @Override
-                public void onRetry(int retryNo) {
-                    // called when request is retried
-                }
-            });
+            Bundle extras = data.getExtras();
+            Bitmap bitmap = (Bitmap) extras.get("data");
+            uploadImage(bitmap);
         }
+    }
+
+    private void getLabel(String id) {
+        String apiKey = "acc_e4fd5656fd09c82";
+        String apiSecret = "03473fd5baf817098e016df08eef5518";
+        String url = "https://api.imagga.com/v1/tagging";
+        RequestParams params = new RequestParams();
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.setBasicAuth(apiKey, apiSecret);
+        params.put("content", id);
+        client.get(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                String s = new String(responseBody);
+                System.out.println(s);
+                JSONObject json = null;
+                try {
+                    String name = "";
+                    json = new JSONObject(s);
+                    JSONArray results = json.getJSONArray("results");
+                    JSONObject img_info = results.getJSONObject(0);
+                    JSONArray tags = img_info.getJSONArray("tags");
+                    JSONObject first_tag = tags.getJSONObject(0);
+                    name = first_tag.get("tag").toString();
+                    getInfo(name);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                String s = new String(responseBody);
+                System.out.println("failure");
+                System.out.println(s);
+            }
+        });
+    }
+
+    private void getInfo(String name) {
+        System.out.println(name);
+        final AnimalDbHelper mydb = new AnimalDbHelper(this);
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.get("http://sauceda.me:3000/" + name, new AsyncHttpResponseHandler() {
+
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                String result;
+                String name;
+                String sciName;
+                String origin;
+                String desc;
+                String path;
+                try {
+                    result = new String(responseBody, "UTF-8");
+                    JSONObject info = new JSONObject(result);
+                    name = info.getString("name");
+                    sciName = info.getString("sciName");
+                    origin = info.getString("origin");
+                    desc = info.getString("description");
+                    path = info.getString("imageUrl");
+                    mydb.insertAnimal(name, sciName, origin, desc, path);
+                    saveEntry(name);
+                    updateView(mydb);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+
+            }
+
+        });
+    }
+
+    private String uploadImage(Bitmap bitmap) {
+        String apiKey = "acc_e4fd5656fd09c82";
+        String apiSecret = "03473fd5baf817098e016df08eef5518";
+        String url = "https://api.imagga.com/v1/content";
+        RequestParams params = new RequestParams();
+        final String[] id = {""};
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 85, out);
+        byte[] myByteArray = out.toByteArray();
+        params.put("image", new ByteArrayInputStream(myByteArray), "image.png");
+
+        AsyncHttpClient client = new AsyncHttpClient();
+        client.setBasicAuth(apiKey, apiSecret);
+        client.post(url, params, new AsyncHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody) {
+                String s = new String(responseBody);
+                JSONObject json = null;
+                try {
+                    json = new JSONObject(s);
+                    JSONArray uploaded = json.getJSONArray("uploaded");
+                    JSONObject json_id = uploaded.getJSONObject(0);
+                    id[0] = json_id.get("id").toString();
+                    getLabel(id[0]);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
+                System.out.println("Failure on upload");
+
+            }
+        });
+        return id[0];
     }
 
     public void saveEntry(String name){
