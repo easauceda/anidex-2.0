@@ -14,4 +14,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="dialog_title">Image not Recognized</string>
+    <string name="dialog_text">Could not find a match. Please try again.</string>
 </resources>

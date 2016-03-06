@@ -1,6 +1,7 @@
 package com.cs437.esauceda.myapplication;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -154,7 +156,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
-
+                openDialog();
             }
 
         });
@@ -193,7 +195,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
-                System.out.println("Failure on upload");
+                //System.out.println("Failure on upload");
 
             }
         });
@@ -218,5 +220,20 @@ public class MainActivity extends Activity {
                 saveEntry(o.toString());
             }
         });
+    }
+
+    public void openDialog() {
+        final Dialog dialog = new Dialog(this); // Context, this, etc.
+        dialog.setContentView(R.layout.dialog_demo);
+        dialog.setTitle(R.string.dialog_title);
+
+        Button dialogButton = (Button) dialog.findViewById(R.id.dialog_ok);
+        dialogButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }
