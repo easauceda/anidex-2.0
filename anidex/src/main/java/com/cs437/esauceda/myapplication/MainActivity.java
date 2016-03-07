@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -122,7 +123,7 @@ public class MainActivity extends Activity {
         });
     }
 
-    private void getInfo(String name) {
+    private void getInfo(final String name) {
         System.out.println(name);
         final AnimalDbHelper mydb = new AnimalDbHelper(this);
         AsyncHttpClient client = new AsyncHttpClient();
@@ -156,7 +157,7 @@ public class MainActivity extends Activity {
 
             @Override
             public void onFailure(int statusCode, cz.msebera.android.httpclient.Header[] headers, byte[] responseBody, Throwable error) {
-                openDialog();
+                openDialog(name);
             }
 
         });
@@ -222,10 +223,12 @@ public class MainActivity extends Activity {
         });
     }
 
-    public void openDialog() {
+    public void openDialog(String name) {
         final Dialog dialog = new Dialog(this); // Context, this, etc.
         dialog.setContentView(R.layout.dialog_demo);
         dialog.setTitle(R.string.dialog_title);
+        TextView text = (TextView) dialog.findViewById(R.id.dialog_info);
+        text.setText("Could not find:" + name);
 
         Button dialogButton = (Button) dialog.findViewById(R.id.dialog_ok);
         dialogButton.setOnClickListener(new View.OnClickListener() {
